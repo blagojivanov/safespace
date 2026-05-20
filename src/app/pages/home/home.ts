@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 
@@ -10,183 +9,245 @@ interface FeatureCard {
   description: string;
   route: string;
   buttonLabel: string;
-  severity: 'success' | 'info' | 'warn';
+  colorClass: string;
 }
 
 @Component({
   selector: 'app-home',
-  imports: [Card, Button, Tag],
+  imports: [Button, Tag],
   template: `
-    <div class="page-hero">
-      <p-tag value="Безбеден Простор" severity="info" styleClass="mb-3" />
-      <h1>Добредојдовте во SafeSpace</h1>
-      <p>
-        Место каде што можеш слободно да зборуваш за своите чувства,
-        да научиш да препознаваш кибер-вознемирување и да најдеш
-        поддршка кога ти е потребна.
-      </p>
-      <p-button
-        label="Провери ги твоите чувства"
-        icon="pi pi-heart"
-        routerLink="/checkin"
-        size="large"
-        (onClick)="navigate('/checkin')"
-      />
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-inner">
+        <p-tag value="💙 Безбеден Простор за млади" severity="info" />
+        <h1>Добредојдовте во<br><span class="hero-brand">SafeSpace</span></h1>
+        <p>
+          Место каде можеш слободно да зборуваш за своите чувства,
+          да научиш да препознаваш кибер-вознемирување и да добиеш
+          поддршка кога ти е потребна.
+        </p>
+        <div class="hero-actions">
+          <p-button
+            label="Провери ги твоите чувства"
+            icon="pi pi-heart"
+            size="large"
+            (onClick)="navigate('/checkin')"
+          />
+          <p-button
+            label="Направи квиз"
+            icon="pi pi-question-circle"
+            size="large"
+            [outlined]="true"
+            (onClick)="navigate('/quiz')"
+          />
+        </div>
+      </div>
     </div>
 
+    <!-- Feature cards -->
     <div class="card-grid">
       @for (card of featureCards; track card.route) {
-        <p-card styleClass="feature-card" (click)="navigate(card.route)">
-          <ng-template #header>
-            <div class="card-header-visual" [class]="'card-header-' + card.severity">
-              <i [class]="'pi ' + card.icon + ' card-icon'"></i>
-            </div>
-          </ng-template>
-          <div class="card-body-content">
+        <div class="feature-card" (click)="navigate(card.route)" role="button" tabindex="0"
+             (keydown.enter)="navigate(card.route)">
+          <div class="fc-icon-wrap" [class]="card.colorClass">
+            <i [class]="'pi ' + card.icon"></i>
+          </div>
+          <div class="fc-body">
             <h3>{{ card.title }}</h3>
             <p>{{ card.description }}</p>
           </div>
-          <ng-template #footer>
-            <p-button
-              [label]="card.buttonLabel"
-              [severity]="card.severity"
-              [outlined]="true"
-              size="small"
-              styleClass="w-full"
-              (onClick)="navigate(card.route)"
-            />
-          </ng-template>
-        </p-card>
+          <div class="fc-footer">
+            <span class="fc-link">{{ card.buttonLabel }} <i class="pi pi-arrow-right"></i></span>
+          </div>
+        </div>
       }
     </div>
 
-    <div class="mission-section">
-      <p-card>
-        <div class="mission-content">
-          <i class="pi pi-shield mission-icon"></i>
-          <div>
-            <h2>Зошто SafeSpace?</h2>
-            <p>
-              Истражувањата на HBSC покажуваат дека секое четврто дете во Македонија
-              доживеало некаков облик на кибер-вознемирување. Ние сме тука за да помогнеме.
-            </p>
-            <p-button
-              label="Дознај повеќе"
-              icon="pi pi-external-link"
-              [text]="true"
-              (onClick)="navigate('/about')"
-            />
-          </div>
-        </div>
-      </p-card>
+    <!-- Mission banner -->
+    <div class="mission-banner">
+      <div class="mission-left">
+        <i class="pi pi-shield mission-icon"></i>
+      </div>
+      <div class="mission-right">
+        <h2>Зошто SafeSpace?</h2>
+        <p>
+          Истражувањата на HBSC покажуваат дека секое четврто дете доживеало
+          некаков облик на кибер-вознемирување. SafeSpace е тука за да помогне.
+        </p>
+        <p-button
+          label="Дознај повеќе за HBSC"
+          icon="pi pi-external-link"
+          iconPos="right"
+          [text]="true"
+          (onClick)="navigate('/about')"
+        />
+      </div>
     </div>
   `,
   styles: [`
-    .page-hero {
-      text-align: center;
-      padding: 3rem 1rem 2rem;
-
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin: 1rem 0;
-        color: var(--p-primary-color);
-      }
-
-      p {
-        font-size: 1.15rem;
-        color: var(--p-text-muted-color);
-        max-width: 600px;
-        margin: 0 auto 2rem;
-        line-height: 1.7;
-      }
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg,
+        var(--p-primary-50, #eff6ff) 0%,
+        var(--p-surface-50, #f8fafc) 100%);
+      border-radius: 16px;
       margin-bottom: 2rem;
+      padding: 3.5rem 2rem;
+      text-align: center;
     }
 
-    :host ::ng-deep .feature-card {
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-
-      &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      }
-
-      .p-card-header {
-        padding: 0;
-      }
-    }
-
-    .card-header-visual {
+    .hero-inner {
+      max-width: 640px;
+      margin: 0 auto;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      border-radius: 8px 8px 0 0;
-
-      &.card-header-info { background: linear-gradient(135deg, #667eea22, #764ba222); }
-      &.card-header-success { background: linear-gradient(135deg, #11998e22, #38ef7d22); }
-      &.card-header-warn { background: linear-gradient(135deg, #f7971e22, #ffd20022); }
+      gap: 1.25rem;
     }
 
-    .card-icon {
-      font-size: 3.5rem;
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      color: var(--p-text-color);
+    }
+
+    .hero-brand {
       color: var(--p-primary-color);
     }
 
-    .card-body-content {
+    .hero-inner p {
+      font-size: 1.1rem;
+      color: var(--p-text-muted-color);
+      line-height: 1.7;
+      margin: 0;
+      max-width: 520px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.875rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    /* Feature cards grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--p-surface-0, #ffffff);
+      border: 1px solid var(--p-surface-200, #e2e8f0);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .fc-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+
+      i {
+        font-size: 3rem;
+        color: var(--p-primary-color);
+      }
+
+      &.blue   { background: linear-gradient(135deg, #dbeafe, #eff6ff); }
+      &.green  { background: linear-gradient(135deg, #dcfce7, #f0fdf4); }
+      &.amber  { background: linear-gradient(135deg, #fef9c3, #fffbeb); }
+    }
+
+    .fc-body {
+      padding: 1.25rem 1.25rem 0.5rem;
+      flex: 1;
+
       h3 {
-        font-size: 1.3rem;
+        font-size: 1.15rem;
         font-weight: 700;
         margin: 0 0 0.5rem;
         color: var(--p-primary-color);
       }
 
       p {
+        font-size: 0.9rem;
         color: var(--p-text-muted-color);
         line-height: 1.6;
         margin: 0;
       }
     }
 
-    .mission-section {
-      margin-top: 1rem;
+    .fc-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--p-surface-100, #f1f5f9);
     }
 
-    .mission-content {
+    .fc-link {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--p-primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+
+      i { font-size: 0.8rem; }
+    }
+
+    /* Mission banner */
+    .mission-banner {
       display: flex;
       align-items: flex-start;
       gap: 1.5rem;
+      background: var(--p-surface-0, #ffffff);
+      border: 1px solid var(--p-surface-200, #e2e8f0);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
 
+    .mission-left { flex-shrink: 0; }
+
+    .mission-icon {
+      font-size: 2.75rem;
+      color: var(--p-primary-color);
+    }
+
+    .mission-right {
       h2 {
-        font-size: 1.4rem;
+        font-size: 1.25rem;
         font-weight: 700;
-        margin: 0 0 0.75rem;
+        margin: 0 0 0.625rem;
         color: var(--p-primary-color);
       }
 
       p {
+        font-size: 0.95rem;
         color: var(--p-text-muted-color);
-        line-height: 1.6;
-        margin: 0 0 1rem;
+        line-height: 1.65;
+        margin: 0 0 0.875rem;
       }
     }
 
-    .mission-icon {
-      font-size: 3rem;
-      color: var(--p-primary-color);
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 600px) {
-      .page-hero h1 { font-size: 1.8rem; }
-      .mission-content { flex-direction: column; }
+    @media (max-width: 640px) {
+      .hero { padding: 2.5rem 1rem; }
+      h1 { font-size: 2rem; }
+      .mission-banner { flex-direction: column; gap: 1rem; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
     }
   `]
 })
@@ -197,26 +258,26 @@ export class HomeComponent {
     {
       icon: 'pi-heart-fill',
       title: 'Провери се',
-      description: 'Кажи ни како се чувствуваш денес на интернет. Ние ќе ти дадеме персонализирана порака и поддршка.',
+      description: 'Кажи ни како се чувствуваш денес на интернет. Ќе добиеш персонализирана порака и поддршка.',
       route: '/checkin',
       buttonLabel: 'Провери ги чувствата',
-      severity: 'info'
+      colorClass: 'blue'
     },
     {
       icon: 'pi-question-circle',
       title: 'Квиз',
-      description: 'Тест за препознавање на кибер-вознемирување. Провери дали знаеш да ги препознаеш знаците.',
+      description: '10 сценарија за препознавање на кибер-вознемирување. Провери колку знаеш.',
       route: '/quiz',
       buttonLabel: 'Започни квиз',
-      severity: 'success'
+      colorClass: 'green'
     },
     {
       icon: 'pi-lightbulb',
       title: 'Совети',
-      description: 'Практични стратегии ако ти се случува тебе или некому кого познаваш. Никогаш не си сам/а.',
+      description: 'Практични стратегии ако ти се случува тебе или некому кого познаваш. Не си сам/а.',
       route: '/tips',
       buttonLabel: 'Прочитај совети',
-      severity: 'warn'
+      colorClass: 'amber'
     }
   ];
 

@@ -10,7 +10,7 @@ import { Divider } from 'primeng/divider';
   template: `
     <div class="about-container">
       <div class="page-hero">
-        <h1><i class="pi pi-info-circle mr-2"></i>За нас</h1>
+        <h1>За нас</h1>
         <p>Дознај повеќе за SafeSpace, HBSC истражувањето и зошто го правиме ова.</p>
       </div>
 
@@ -19,7 +19,7 @@ import { Divider } from 'primeng/divider';
         <p-card styleClass="mb-4">
           <div class="section-header">
             <p-tag value="HBSC" severity="info" />
-            <h2>Što е HBSC?</h2>
+            <h2>Што е HBSC?</h2>
           </div>
           <p>
             <strong>Health Behaviour in School-aged Children (HBSC)</strong> е меѓународна студија
